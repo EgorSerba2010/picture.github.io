@@ -22,43 +22,59 @@ function createQuarter(x, y, size, depth = 0) {
   div.style.left = `${x - size / 2}px`;
   div.style.top = `${y - size / 2}px`;
   div.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-  div.style.zIndex = depth; // чтобы потомки были выше
-
+  div.style.zIndex = depth;
+  div.dataset.x = x;
+  div.dataset.y = y;
+  div.dataset.depth = depth;
+  
   if (depth < 8) {
-
-    div.addEventListener('pointerenter', (event) => {
-      console.log(event)
-      if (div.dataset.split === 'true') return;
-      div.dataset.split = 'true';
-
-      const half = size / 2;
-      const offset = half / 2;
-
-      const coords = [
-        { x: x - offset, y: y - offset },
-        { x: x + offset, y: y - offset },
-        { x: x - offset, y: y + offset },
-        { x: x + offset, y: y + offset }
-      ];
-
-      coords.forEach(({ x, y }) => {
-        const child = createQuarter(x, y, half, depth + 1);
-        // 👇 добавляем потомков в startPic, а не внутрь родителя
-        startPic.appendChild(child);
-      });
-
-      // 👇 исчезновение только родителя
-      div.style.opacity = '0';
-      div.style.transform = 'scale(0)';
-      setTimeout(() => {
-        div.remove(); // можно удалить совсем
-      }, 300);
+    div.addEventListener('pointerenter', () => {
+      triggerSplit(div);
+    });
+    document.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const x = touch.clientX;
+      const y = touch.clientY;
+    
+      const element = document.elementFromPoint(x, y);
+      if (element && element.classList.contains('quarter')) {
+        triggerSplit(element);
+      }
     });
   }
 
   return div;
 }
 
+// Деление круга
+function triggerSplit(div) {
+  if (div.dataset.split === 'true') return;
+  div.dataset.split = 'true';
+
+  const size = parseFloat(div.style.width);
+  const x = parseFloat(div.dataset.x);
+  const y = parseFloat(div.dataset.y);
+  const depth = parseInt(div.dataset.depth);
+
+  const half = size / 2;
+  const offset = half / 2;
+
+  const coords = [
+    { x: x - offset, y: y - offset },
+    { x: x + offset, y: y - offset },
+    { x: x - offset, y: y + offset },
+    { x: x + offset, y: y + offset }
+  ];
+
+  coords.forEach(({ x, y }) => {
+    const child = createQuarter(x, y, half, depth + 1);
+    startPic.appendChild(child);
+  });
+
+  div.style.opacity = '0';
+  div.style.transform = 'scale(0)';
+  setTimeout(() => div.remove(), 300);
+}
 
 // Обработка изображения
 function processImage() {
@@ -80,3 +96,5 @@ if (img.complete) {
 } else {
   img.onload = processImage;
 }
+
+// 📱 Поддержка касания: деление при движении пальца

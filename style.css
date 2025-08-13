@@ -6,6 +6,7 @@
 
 body {
   height: 100vh;
+  width: 100%;
   background: #dfdfdf;
   display: flex;
   justify-content: center;
@@ -15,15 +16,16 @@ body {
 
 .picture {
   position: relative;
-  width: 50vmin;
-  height: 50vmin;
+  width: 100vmin;
+  height: 100vmin;
   border-radius: 50%;
   overflow: visible;
 }
 
 .quarter {
   position: absolute;
-  border-radius: 50%;
+  float: left;
+  border-radius: 25%;
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
