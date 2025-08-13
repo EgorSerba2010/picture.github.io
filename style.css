@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background: #dfdfdf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.picture {
+  position: relative;
+  width: 50vmin;
+  height: 50vmin;
+  border-radius: 50%;
+  overflow: visible;
+}
+
+.quarter {
+  position: absolute;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
